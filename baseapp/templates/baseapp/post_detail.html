@@ -1,0 +1,94 @@
+{% extends 'baseapp/base.html' %}
+
+{% block content %}
+
+{% include 'includes/alert.html' %}
+
+    <div class="container">
+        <h2><a href="{% url 'post_detail' pk=post.pk %}">{{post.title}}</a></h2>
+        <p class="blog-post-meta">{{post.published_date|date:'M D Y' }} <a href="#">@{{post.user}}</a></p>
+        
+        <div class='mb-5'>
+            <p class="postcontent">{{ post.text|safe|linebreaksbr }}</p>
+        </div>
+        <div>
+            Category:
+            {% for category in post.category.all %}
+                <span> <a href='#' class="btn-small btn-primary">{{category}}</a></span>
+            {% endfor %}
+        </div>
+
+        {% if post.published_date %}
+            <p>Published On: {{ post.published_date|date:'D M Y' }}</p>
+        {% else %}
+            <p>Created On: {{ post.created_date|date:'D M Y'}}</p>
+        {% endif %}
+
+        {% if post.published %}
+        {% else %}
+            <a class="btn btn-primary" href="{% url 'post_publish' pk=post.pk %}">Publish</a>
+        {% endif %}
+
+        
+        <div >
+            <a style="text-decoration: none; left" id="link" href="{% url 'post_detail' pk=post.pk %}">Comments : {{post.approved_comments.count}}</a>
+            {% if user.is_authenticated %}
+            
+            <div class="post-icons">
+                <a class="btn" href="{% url 'post_edit' pk=post.pk %}">
+                <i class="fa-solid fa-pencil"></i>
+                </a>
+                <a class="btn " href="{% url 'post_remove' pk=post.pk %}">
+                    <i class="fa-solid fa-trash-can"></i>
+                </a>
+            </div>
+        </div>
+        {% endif %}
+
+        <hr>
+        
+
+        <div class="comment-form">
+            <a class="add-comment btn btn-primary" href="{% url 'add_comment_to_post' pk=post.pk %}">Comment</a></button>
+
+        </div>
+
+
+        <div class="comment-post mb-5">
+            {% for comment in comments %}
+
+            {% if user.is_authenticated or comment.approved_comment %}
+                    
+                    {% if  comment %}
+                    <div class="comment-icons">
+                        <a class="btn " href="{% url 'comment_remove' pk=comment.post.pk comment_pk=comment.pk%}">Delete
+                            <i class="fa-solid fa-trash-can"></i>
+                        </a>
+                        <a class="btn" href="{% url 'comment_edit' pk=comment.post.pk comment_pk=comment.pk %}">edit
+                            <i class="fa-solid fa-circle-check"></i>
+                        </a>
+                    </div>
+                        
+                    {% endif %}
+                        <h4>@{{comment.user}}</h4>
+                        <p>{{comment.text|safe|linebreaksbr }}</p>
+                        
+                        <p>{{ comment.created_date }}</p><hr>
+            {% endif %}
+
+        {% empty %}
+        <p>No comment posted yet!</p>
+                    
+        {% endfor %}
+        </div>
+        
+        
+    </div>
+
+
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'baseapp/base.html' %}
+
+{% block content %}
+
+<div class="center p-5">
+    <form action="{% url 'post_edit' post.pk %}" method="Post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{form.media}}
+
+        <div class="container py-10">
+            <!-- <h1 class="h3 mb-3 fw-normal">Create a blog</h1> -->
+            <h2 class="pb-5 text-center">Update blog</h2>
+                <div class="form-floating">
+                    {{form.media}}
+                    {{form.as_p}}
+                <button class="btn btn-primary">Update</button>
+        </div>
+    </form>
+
+    <script>var editor = new MediumEditor('.editable');</script>
+</div>
+
+
+{% endblock %}
